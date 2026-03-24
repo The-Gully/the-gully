@@ -1,20 +1,27 @@
-import pandas as pd
 import ast
+import pandas as pd
 
 def clean_list_string(val):
-    """Converts string representation of lists to actual lists, returns None for NULLs."""
-    # Since we use dtype=str, we check for string versions of nulls
-    if pd.isna(val) or val == "" or str(val).lower() == "nan" or val == "[]" or val is None:
-        return None  
+    # Handle nulls
+    if pd.isna(val) or val is None or str(val).lower() == 'nan':
+        return None 
     
-    try:
-        # If it looks like a list string "['item']", convert it
-        if isinstance(val, str) and val.startswith('['):
-            return ast.literal_eval(val)
-        # If it's already a list, return it
-        if isinstance(val, list):
-            return val
-        # Otherwise wrap the value in a list (for single name strings)
-        return [val]
-    except (ValueError, SyntaxError):
-        return [val]
+    val_str = str(val).strip()
+    
+    # If the CSV saved it as a Python list string like "['2018', '2019']"
+    if val_str.startswith('[') and val_str.endswith(']'):
+        try:
+            # Safely evaluate the string into a python list
+            parsed_list = ast.literal_eval(val_str)
+            # Strip any lingering braces/quotes from the items
+            return [str(item).strip("{}'\" ") for item in parsed_list]
+        except (ValueError, SyntaxError):
+            pass 
+            
+    # If the CSV saved it as a Postgres array string like "{2018, 2019}"
+    # Strip the outside braces/brackets and split by comma
+    cleaned_str = val_str.strip("{}[]'\"")
+    if not cleaned_str:
+        return None
+        
+    return [item.strip(" '\"") for item in cleaned_str.split(',')]

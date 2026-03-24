@@ -25,9 +25,6 @@ This applications plans to use **discord like tagging** (mentions) mechanism to 
 [Kaggle Publically available Dataset link](https://www.kaggle.com/datasets/astrasv247/ipl-dataset-2008-2025-ball-by-ball)
 
 ## Showcase
-I have build a dummy frontend using the backedn endpoints (without auth integrations)
-![Dummy fronted](assets/dummy_frontend.png)
-
 This is the man page
 ![alt text](assets/man_page.png)
 

@@ -20,11 +20,11 @@ class EntityFetcher:
 
     def fetch_entities(self) -> Dict[str, List[str]]:
 
-        team_file = Path("db/sql/all_teams.sql")
-        players_file = Path("db/sql/all_players.sql")
-        umpires_file = Path("db/sql/all_umpires.sql")
-        venues_file = Path("db/sql/all_venues.sql")
-        cities_file = Path("db/sql/all_cities.sql")
+        team_file = Path("db/sql/entities/all_teams.sql")
+        players_file = Path("db/sql/entities/all_players.sql")
+        umpires_file = Path("db/sql/entities/all_umpires.sql")
+        venues_file = Path("db/sql/entities/all_venues.sql")
+        cities_file = Path("db/sql/entities/all_cities.sql")
 
         # SQL text
         teams_sql = team_file.read_text()

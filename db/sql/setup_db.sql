@@ -1,6 +1,6 @@
 -- CREATE DATABASE IF NOT EXISTS ipl_database;
 
-DROP TABLE IF EXISTS ipl_ball_by_ball;
+-- DROP TABLE IF EXISTS ipl_ball_by_ball;
 CREATE TABLE ipl_ball_by_ball (
     id SERIAL PRIMARY KEY,
 

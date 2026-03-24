@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from agents.sql_agent import SQLAgent
+from tagging.entity_fetcher import EntityFetcher
 
 # Self-documenting metadata
 app = FastAPI(
@@ -7,16 +8,18 @@ app = FastAPI(
     description="An AI-powered API that translates natural language to SQL queries.",
     version="1.0.1",
     docs_url="/docs",  # You can even rename the docs URL here
-    redoc_url="/redoc"
+    redoc_url="/redoc",
 )
 
 # Initialize agent globally for performance
 agent = SQLAgent()
 
+
 @app.get("/health", tags=["System"])
 async def health_check():
     """Check if the API and SQL Agent are operational."""
     return {"status": "healthy", "version": "1.0.0"}
+
 
 @app.get("/agents/query", tags=["AI Agent"])
 async def run_query(query: str):
@@ -26,3 +29,13 @@ async def run_query(query: str):
     """
     response = agent.invoke_agent(query)
     return {"response": response}
+
+
+@app.get("/entities", tags=["Entities"])
+async def get_entities():
+    """
+    Fetch all distinct entities from the database.
+    Returns players, teams, venues, cities, and umpires.
+    """
+    fetcher = EntityFetcher()
+    return fetcher.fetch_entities()
