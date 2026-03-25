@@ -7,7 +7,7 @@ class AgentsConfig:
         load_dotenv()
 
         # Environment Variable
-        self.groq_api_key = os.getenv("groq_api_key")
+        self.groq_api_key = os.getenv("GROQ_API_KEY")
         self.database_url = os.getenv("DATABASE_URL")
 
         # LLM Configurations

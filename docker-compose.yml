@@ -1,0 +1,43 @@
+services:
+  sql-agent:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - POSTGRES_SERVER=postgres
+      - POSTGRES_DB=${SQL_AGENT_DB_NAME:-sql_agent}
+      - POSTGRES_USER=${SQL_AGENT_DB_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - DATABASE_URL=postgresql://${SQL_AGENT_DB_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/${SQL_AGENT_DB_NAME:-sql_agent}
+      - CSV_DATA_PATH=/app/ipl_data.csv
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=${SQL_AGENT_DB_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${SQL_AGENT_DB_NAME:-sql_agent}
+    ports:
+      - "5433:5432"
+    volumes:
+      - sql_agent_data:/var/lib/postgresql/data
+      - ./db/sql/setup_db.sql:/docker-entrypoint-initdb.d/01-setup.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  sql_agent_data:

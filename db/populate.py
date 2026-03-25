@@ -45,7 +45,6 @@ class DatabasePopulator:
 
         conn = None
         try:
-
             conn = psycopg2.connect(**self.db_params)
             cur = conn.cursor()
 
@@ -80,6 +79,10 @@ class DatabasePopulator:
 
 
 if __name__ == "__main__":
+    import os
+
     db_params = DatabaseConfig().as_dict()
-    db = DatabasePopulator(db_params, "ipl_data.csv")
+
+    csv_path = os.getenv("CSV_DATA_PATH", "./ipl_data.csv")
+    db = DatabasePopulator(db_params, csv_path)
     db.upload_csv_to_postgres()
